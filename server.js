@@ -1,11 +1,11 @@
+var http = require('http');
+var app = require('./app');
 var mongoose = require('mongoose');
+var mongo = require("./mongo");
 
-var utilisateur = require('./models/utilisateur');
+//mongoose.connect('mongodb://localhost/logos_core');
+mongo();
 
-mongoose.connect('mongodb://localhost/logos_core');
+var server = http.createServer(app);
 
-utilisateur.find({}, function (err, users){
-    if(err) throw err;
-
-    console.log(users);
-});
+server.listen(4300);
