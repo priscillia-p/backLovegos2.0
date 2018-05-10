@@ -1,0 +1,22 @@
+{
+  "name": "backlovegos2.0",
+  "version": "1.0.0",
+  "description": "new back lovegos",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/priscillia-p/backLovegos2.0.git"
+  },
+  "author": "PPR",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/priscillia-p/backLovegos2.0/issues"
+  },
+  "homepage": "https://github.com/priscillia-p/backLovegos2.0#readme",
+  "dependencies": {
+    "mongoose": "^5.0.18"
+  }
+}
