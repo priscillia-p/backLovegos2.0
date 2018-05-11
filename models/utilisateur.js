@@ -2,6 +2,11 @@ var mongoose = require('mongoose');
 var schema = mongoose.Schema;
 
 const UserSchema = mongoose.Schema({
+    type_utilisateur:{
+        type: String,
+        required: true,
+        trim: true,
+    },
     login: {
         type: String,
         required: true,
@@ -20,7 +25,7 @@ const UserSchema = mongoose.Schema({
     prenom:{type: String,
         required: true,
         trim: true,},
-    premium:{type: String,
+    statutPremium:{type: Boolean,
         required: true,
         trim: true,},
     password: {
