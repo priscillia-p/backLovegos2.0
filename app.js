@@ -8,6 +8,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(cors());
 
-app.use('/users',user);
+app.use('/lovegos/users',user);
 
 module.exports = app;
