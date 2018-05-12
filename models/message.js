@@ -30,7 +30,7 @@ const MessageSchema = mongoose.Schema({
 
 });
 
-MessageSchema.statics.addMessage = (message, callback) => {
+/*MessageSchema.statics.addMessage = (message, callback) => {
     message.save(callback);
 };
 
@@ -39,7 +39,7 @@ MessageSchema.statics.getMessages = (callback) => {
 };
 MessageSchema.statics.getMessageByConver = (id, callback) => {
     essage.find({conversation_id: id}, callback);
-};
+};*/
 
 var Message = mongoose.model('message', MessageSchema);
 module.exports = Message;

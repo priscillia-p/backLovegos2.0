@@ -4,6 +4,7 @@ var cors = require('cors');
 var user = require('./routes/userRoad');
 var love = require('./routes/lovesRoad');
 var conversation = require('./routes/conversationRoad');
+var message = require('./routes/messageRoad');
 var app = express();
 
 app.use(bodyParser.json());
@@ -13,5 +14,6 @@ app.use(cors());
 app.use('/lovegos/users',user);
 app.use('/lovegos', love);
 app.use('/lovegos/conversation', conversation);
+app.use('/lovegos/message', message);
 
 module.exports = app;
