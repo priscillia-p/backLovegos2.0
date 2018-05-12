@@ -1,21 +1,31 @@
 var mongoose = require('mongoose');
+var user = require('./utilisateur');
+var schema = mongoose.Schema;
 
 const MessageSchema = mongoose.Schema({
-    texteMessage: {
-        type: String,
-        required: true
-    },
-    heureEnvoi: {
-        type: Date,
-        required: true
-    },
-    expediteur: {
-        type: String,
-        required: true
-    },
-    conversationId:{
+    _id:{
         type: Number,
+        required: false
+    },
+    contenu: {
+        type: String,
         required: true
+    },
+    dateEnvoi: {
+        type: Date,
+        required: false
+    },
+    dateLecture: {
+        type: String,
+        required: false
+    },
+    auteur:{
+        type: Object,
+        required: true
+    },
+    idConversation:{
+        type: Number,
+        required: false
     }
 
 });
@@ -31,5 +41,5 @@ MessageSchema.statics.getMessageByConver = (id, callback) => {
     essage.find({conversation_id: id}, callback);
 };
 
-const Message = mongoose.model('message', MessageSchema);
+var Message = mongoose.model('message', MessageSchema);
 module.exports = Message;

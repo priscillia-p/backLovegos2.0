@@ -2,7 +2,11 @@ var mongoose = require('mongoose');
 var schema = mongoose.Schema;
 
 const UserSchema = mongoose.Schema({
-    type_utilisateur:{
+    _id:{
+        type: Number,
+        required: false
+    },
+    type:{
         type: String,
         required: true,
         trim: true,
@@ -31,6 +35,26 @@ const UserSchema = mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    motifs:{
+        type:Array,
+        required:false
+    },
+    trancheAgeRecherche:{
+        type:Array,
+        required:false
+    },
+    genresRecherche:{
+        type:Array,
+        required: false
+    },
+    genre:{
+        type: String,
+        required: true
+    },
+    presentation:{
+        type: String,
+        required: false
     }
 });
 
@@ -69,6 +93,6 @@ UserSchema.statics.authenticate = function(username, password, callback) {
     });
 };
 
-var utilisateur = mongoose.model('utilisateur', UserSchema);
+var utilisateur = mongoose.model('utilisateurs', UserSchema);
 
 module.exports = utilisateur;

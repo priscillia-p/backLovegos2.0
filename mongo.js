@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
+const Promise = require('bluebird');
 
-
-
+mongoose.Promise = Promise;
 /*mongoose.connect('mongodb://localhost/logos_core');
 
 var getAllUsers = function(){
