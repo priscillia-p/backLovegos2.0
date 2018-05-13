@@ -13,14 +13,13 @@ var conversationSchema = mongoose.Schema({
         required: false
     },
     participants: {
-        type: Object,
+        type: [Object],
         required: false
     },
     messages:{
-        type: Object,
+        type: [Object],
         required: false
-    },
-
+    }
 });
 
 var conversation = mongoose.model('conversation', conversationSchema);

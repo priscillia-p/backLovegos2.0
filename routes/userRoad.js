@@ -1,5 +1,6 @@
 var express = require('express');
 var mongoose = require('mongoose');
+var mongoosastic = require('mongoosastic');
 var jwt = require('jsonwebtoken');
 var utilisateur = require('../models/utilisateur');
 
@@ -64,6 +65,40 @@ userRouter.get("/profil/:id", function(req,res,next){
         if(err) throw err;
         res.json({'utilisateur': user});
     });
-})
+});
+
+
+//Récupération de profil recommandé
+userRouter.get("/recommandations/:id", function(req,res,next){
+    let user;
+    utilisateur.findById(req.params.id, function(err, u){
+        if (err) throw err;
+        console.log(u);
+        return user = u;
+    }).then(
+        function(){
+            let motif = user.motifs;
+            let ageRecherche = user.trancheAgeRecherche;
+            let genre = user.genresRecherche;
+            try{
+                utilisateur.esSearch({
+                    bool:{
+                        must:[
+                            {match:{motifs:motif}},
+                            {match:{trancheAgeRecherche:ageRecherche}},
+                            {match:{genresRecherche:genre}}
+                        ]
+                    }
+                }).then(function(results){
+                    console.log(results);
+                });
+            }catch(e){
+                console.log("error " + e);
+            }
+           
+        }
+    );
+   
+});
 
 module.exports = userRouter;

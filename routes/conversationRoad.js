@@ -23,5 +23,38 @@ conversationRouter.get("/", function(req, res, next){
     });
 });
 
+//Création d'une nouvelle conversation
+conversationRouter.post("/new-conversation", function(req, res,next){
+    let participantsIds = req.body.participants;
+    let participants = [];
+    participantsIds.forEach(id => {
+        user.findById(id,function(err, user){
+            if(err) throw err;
+            participants.push(user);
+        });
+    });
+
+    let newConversation = new conversation();
+    newConversation.participants = participants;
+    let id = 0;
+
+    conversation.count({}, function(err, count){
+        if (err) throw err;
+        id = count;
+        newConversation._id = id + 1;
+    }).then(
+        function(){
+            try{
+                conversation.create(newConversation);
+                return res.json({"success":"OK"});
+            }catch(e){
+                return res.json({"success":"NOPE"});
+            }
+            
+        }
+    )
+
+});
+
 
 module.exports = conversationRouter;

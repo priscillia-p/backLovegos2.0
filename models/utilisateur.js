@@ -1,4 +1,7 @@
 var mongoose = require('mongoose');
+var mongoosastic = require('mongoosastic');
+var elastic = require('mongoose-elasticsearch-xp');
+//var esClient = new mongoosastic.esClient({host:'localhost:9200'});
 var schema = mongoose.Schema;
 
 const UserSchema = mongoose.Schema({
@@ -93,6 +96,19 @@ UserSchema.statics.authenticate = function(username, password, callback) {
     });
 };
 
+//UserSchema.plugin(mongoosastic);
+UserSchema.plugin(elastic);
 var utilisateur = mongoose.model('utilisateurs', UserSchema);
+/*utilisateur.createMapping(function(err, mapping) {
+    if (err) {
+      console.log('error creating mapping (you can safely ignore this)');
+      console.log(err);
+    } else {
+      console.log('mapping created!');
+      console.log(mapping);
+    }
+  });*/
+
+
 
 module.exports = utilisateur;
