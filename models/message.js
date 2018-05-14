@@ -23,7 +23,7 @@ const MessageSchema = mongoose.Schema({
         type: Object,
         required: true
     },
-    idConversation:{
+    conversationId:{
         type: Number,
         required: false
     }
@@ -41,5 +41,5 @@ MessageSchema.statics.getMessageByConver = (id, callback) => {
     essage.find({conversation_id: id}, callback);
 };*/
 
-var Message = mongoose.model('message', MessageSchema);
+var Message = mongoose.model('messages', MessageSchema);
 module.exports = Message;

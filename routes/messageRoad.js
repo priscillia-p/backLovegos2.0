@@ -20,7 +20,7 @@ messageRouter.post("/", function(req, res, next){
     newMessage.contenu = req.body.message.contenu;
     newMessage.dateEnvoi = req.body.message.dateEnvoi;
     newMessage.auteur = req.body.message.auteur;
-    newMessage.idConversation = req.body.idConversation;
+    newMessage.conversationId = req.body.idConversation;
     
     let id = 0;
     message.count({}, function(err, count){
@@ -39,7 +39,7 @@ messageRouter.post("/", function(req, res, next){
     );
 
     let conv;
-    conversation.findById(newMessage._id, function(err, c){
+    conversation.findById(newMessage.conversationId, function(err, c){
         if(err) throw err;
         conv = c;
     }).then(
@@ -48,7 +48,7 @@ messageRouter.post("/", function(req, res, next){
             conversation.update({},conv,function(err){
                 if(err) return res.json({"success":"NOPE"});
                 return  res.json({"success": "OK"});
-            })
+            });
         }
     );
 });

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var mongoosastic = require('mongoosastic');
+var elasticsearch = require('../elastic');
 var elastic = require('mongoose-elasticsearch-xp');
 //var esClient = new mongoosastic.esClient({host:'localhost:9200'});
 var schema = mongoose.Schema;
@@ -27,30 +28,30 @@ const UserSchema = mongoose.Schema({
         required: true,
         trim: true,},
     photo:{type: String,
-        required: true,
+        required: false,
         trim: true,},
     prenom:{type: String,
         required: true,
         trim: true,},
     statutPremium:{type: Boolean,
-        required: true,
+        required: false,
         trim: true,},
     password: {
         type: String,
         required: true
     },
-    motifs:{
-        type:Array,
+    motifs:[{
+        type:String,
         required:false
-    },
-    trancheAgeRecherche:{
-        type:Array,
+    }],
+    trancheAgeRecherche:[{
+        type: Number,
         required:false
-    },
-    genresRecherche:{
-        type:Array,
+    }],
+    genresRecherche:[{
+        type:String,
         required: false
-    },
+    }],
     genre:{
         type: String,
         required: true
@@ -97,7 +98,7 @@ UserSchema.statics.authenticate = function(username, password, callback) {
 };
 
 //UserSchema.plugin(mongoosastic);
-UserSchema.plugin(elastic);
+UserSchema.plugin(mongoosastic);
 var utilisateur = mongoose.model('utilisateurs', UserSchema);
 /*utilisateur.createMapping(function(err, mapping) {
     if (err) {
@@ -109,6 +110,7 @@ var utilisateur = mongoose.model('utilisateurs', UserSchema);
     }
   });*/
 
+  
 
 
 module.exports = utilisateur;

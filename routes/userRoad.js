@@ -67,6 +67,47 @@ userRouter.get("/profil/:id", function(req,res,next){
     });
 });
 
+userRouter.post("/add", function(req,res,next){
+   let user = new utilisateur();
+   user.type = req.body.type;
+   user.login = req.body.login;
+   user.mail = req.body.mail;
+   user.nom = req.body.nom;
+   user.photo = req.body.photo;
+   user.prenom = req.body.prenom;
+   user.password = req.body.password;
+    user.motifs = req.body.motifs;
+    user.trancheAgeRecherche = req.body.trancheAgeRecherche;
+    user.genresRecherche = req.body.genresRecherche;
+    user.genre = req.body.genre;
+    user.presentation = req.body.presentation;
+
+    utilisateur.count({}, function(err, count){
+        if(err) throw err;
+        user._id = count + 1;
+    }).then(
+        function(){
+            utilisateur.create(user);
+            res.json({"success" : "OK"});
+        }
+    )
+
+
+});
+
+userRouter.put("/:id", function(req, res, next){
+    let user;
+    utilisateur.findById(req.params.id, function(err,u){
+        if(err) throw err;
+        user = u;
+        user.nom = "kiki";
+        user.save(function(err, userupdate){
+            if (err) throw err;
+            return res.json({"utilisateur": user});
+        });
+    });
+});
+
 
 //Récupération de profil recommandé
 userRouter.get("/recommandations/:id", function(req,res,next){
