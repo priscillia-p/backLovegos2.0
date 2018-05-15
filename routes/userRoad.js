@@ -31,7 +31,7 @@ userRouter.get("/student", function(req,res){
 });
 
 //authentification d'un user
-userRouter.post("/authenticate", (req, res, next) => {
+userRouter.post("/login", (req, res, next) => {
     let body = req.body;
     let response = {success: false};
 
@@ -40,23 +40,25 @@ userRouter.post("/authenticate", (req, res, next) => {
             response.msg = err.msg;
             res.json(response);
         } else {
-            let signData = {
-                id: user._id,
-                username: user.username
-            };
-            let token = jwt.sign(signData, config.secret, {
-                expiresIn: 604800
-            })
+          //  utilisateur.findOne({"login":body.login.trim(), "password":body.password.trim()}, function(err, user){
+               // if(err) throw err;
 
-            response.token = "JWT " + token;
-            response.user = signData;
-            response.success = true;
-            response.msg = "User authentificated successfuly";
+                let signData = user;
+                let token = jwt.sign(signData, "logosCore", {
+                    expiresIn: 604800
+                });
+    
+                response.token = "Token " + token;
+                response.user = user;
+                response.success = true;
+                response.msg = "User authentificated successfuly";
+                
+                res.json(response);
+           // });
             
-            res.json(response);
 
         }
-    })
+    });
 });
 
 //récupération du profil d'un utilisateur par son profil
@@ -84,7 +86,9 @@ userRouter.post("/add", function(req,res,next){
 
     utilisateur.count({}, function(err, count){
         if(err) throw err;
+        console.log(count);
         user._id = count + 1;
+        console.log(user._id)
     }).then(
         function(){
             utilisateur.create(user);
@@ -115,13 +119,17 @@ userRouter.get("/recommandations/:id", function(req,res,next){
     utilisateur.findById(req.params.id, function(err, u){
         if (err) throw err;
         console.log(u);
-        return user = u;
+        user = u;
+        console.log(user.dateNaissance);
     }).then(
         function(){
             let motif = user.motifs;
             let ageRecherche = user.trancheAgeRecherche;
             let genre = user.genresRecherche;
-            try{
+            console.log('recommandation - user ageRecherche : ' + ageRecherche);
+            console.log('recommandation - birth year : ' + user.dateNaissance - ageRecherche[0]);
+            console.log('recommandation - min year : ' + user.dateNaissance - ageRecherche[0]);
+           /* try{
                 utilisateur.esSearch({
                     bool:{
                         must:[
@@ -135,7 +143,7 @@ userRouter.get("/recommandations/:id", function(req,res,next){
                 });
             }catch(e){
                 console.log("error " + e);
-            }
+            }*/
            
         }
     );

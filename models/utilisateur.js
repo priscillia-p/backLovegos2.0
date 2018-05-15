@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var mongoosastic = require('mongoosastic');
 var elasticsearch = require('../elastic');
+var bcryptjs = require('bcryptjs');
 var elastic = require('mongoose-elasticsearch-xp');
 //var esClient = new mongoosastic.esClient({host:'localhost:9200'});
 var schema = mongoose.Schema;
@@ -16,12 +17,12 @@ const UserSchema = mongoose.Schema({
         es_indexed:true
     },
     geoLoc:{
-        geo_point: {
+       /* geo_point: {
             type: String,
             es_type: 'geo_point',
             es_lat_lon: true,
             es_indexed:true
-        },
+        },*/
         lat:{
             type: Number,
             es_indexed:true
@@ -106,9 +107,13 @@ UserSchema.methods.getUserById = function(id, callback) {
     utilisateur.findById(id, callback);
 }
 
-UserSchema.methods.getUserByUserName = function(username, callback) {
-    let query = {username: username};
-    utilisateur.findOne(query, callback);
+UserSchema.statics.getUserByUserName = function(login,password, callback) {
+    let query = {"login": login, "password":password};
+    utilisateur.findOne(query, function(err, user){
+        if(err) throw err;
+        console.log("getUserbyName : " + user);
+        return callback(null,user);
+    });
 }
 
 UserSchema.methods.getUsers = () => {
@@ -118,30 +123,63 @@ UserSchema.methods.getUsers = () => {
     });
 }
 
-UserSchema.statics.authenticate = function(username, password, callback) {
-    utilisateur.getUserByUserName(username, (err, user) => {
+UserSchema.statics.authenticate = function(login, password, callback) {
+    utilisateur.getUserByUserName(login,password, (err, user) => {
         if (err) return callback({msg: "There was an error on getting the user"});
         if (!user) {
+            console.log("authenticate - pas de user");
             let error = {msg: "Wrong username or password"};
             return callback(error);
         } else {
-            bcryptjs.compare(password, user.password, (err, result) => {
+            if(password == user.password){
+                console.log("authenticate - resuly=t true")
+                return callback(null, user);
+            }else{
+                let error = {msg: "Wrong username or password"};
+                return callback(error);
+            }
+            /*bcryptjs.compare(password, user.password, (err, result) => {
+                console.log("authenticate -compare result: " + result);
                 if (result == true) {
+                    console.log("authenticate - resuly=t true")
                     return callback(null, user);
                 } else {
                     let error = {msg: "Wrong username or password"};
                     return callback(error);
                 }
-            });
+            });*/
         }
     });
 };
 
+
+
 //UserSchema.plugin(mongoosastic);
-UserSchema.plugin(mongoosastic);
+UserSchema.plugin(mongoosastic,{
+    index:'utilisateurs',
+    type:'utilisateur',
+    hydrate:true, hydrateOptions: {lean: true}
+});
+
+/*UserSchema.statics.search = function(){
+    UserSchema
+   /* UserSchema.search({'query':{
+        'match':{
+            "nom":"Chanel"
+       }
+    }
+    }, function(err, result){
+    console.log(result);
+    return result;
+    });
+}*/
+
+
+
 var utilisateur = mongoose.model('utilisateurs', UserSchema);
 var stream = utilisateur.synchronize();
 var count = 0;
+UserSchema.ser
 
 utilisateur.createMapping(function(err, mapping) {
     if (err) {
@@ -163,6 +201,14 @@ stream.on('error', function(err){
     console.log(err);
 });
 
+/*utilisateur.esSearch({query:{
+    match:{
+        "nom":"Chanel"
+    }
+}
+},{hydrate: true}, function(err, result){
+console.log(result);
+});*/
 
   
 

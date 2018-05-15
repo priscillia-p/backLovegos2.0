@@ -18,6 +18,7 @@
   "homepage": "https://github.com/priscillia-p/backLovegos2.0#readme",
   "dependencies": {
     "async": "^2.6.0",
+    "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.1",
     "cors": "^2.8.4",
     "elasticsearch": "^14.2.2",
