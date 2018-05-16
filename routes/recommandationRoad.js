@@ -5,6 +5,9 @@ var elastic = require('elasticsearch');
 var jwt = require('jsonwebtoken');
 var utilisateur = require('../models/utilisateur');
 var loves = require('../models/loves');
+var userjs = require('./userRoad.js');
+
+var tokens = userjs.tokens;
 
 var recomRouter = express.Router();
 
@@ -17,7 +20,8 @@ recomRouter.get("/recommandations/:id", function(req, res){
     }).then(
         function(user){
             let mustGenre;
-            let matchMotif;
+            let matchMotif = "";
+            let temp;
             let date = new Date();
             let dateMin = (date.getFullYear() - (user.trancheAgeRecherche[1])) + '-01-01';
             let dateMax = (date.getFullYear() - (user.trancheAgeRecherche[0])) + '-12-31';
@@ -33,44 +37,52 @@ recomRouter.get("/recommandations/:id", function(req, res){
             console.log("oojppj" + ((user.motifs.length)- 1));
             for(var i = 0; i < user.motifs.length; i++){
                 console.log("i : " + i)
-                console.log(i);
-                console.log(user.motifs[i]);
-                if(i = 0){
-                    matchMotif += {"match": {"motifs": user.motifs[i]}};
-                    console.log(matchMotif);
-                }else if(i < ((user.motifs.length)- 1)){
-                    matchMotif += ',' + {"match": {"motifs": user.motifs[i]}}
-                    console.log(matchMotif);
+                
+                /*if(i == 0){
+                    console.log(i);
+                    console.log("i: " + i + ":  " + user.motifs[i]);
+                    matchMotif = user.motifs[i]
+                    console.log(temp);
+                }else if((i < ((user.motifs.length)- 1)) && i != 0){
+                    temp += ',' + JSON.stringify({'match': {"motifs": user.motifs[i]}});
+                    console.log(temp);
+                }*/
+                if(i < ((user.motifs.length)- 1)){
+                    matchMotif += user.motifs[i] + " OR ";
                 }
                 
                 if(i = ((user.motifs.length)- 1)){
                     console.log(i);
-                    console.log(user.motifs[i]);
-                  matchMotif += {"match":{"motifs":user.motifs[i] }}  
+                    console.log("i: " + i + ":  " + user.motifs[i]);
+                    matchMotif += user.motifs[i];
                 }
                     
                 
             }
-
-            console.log(matchMotif.toString);
+           
+            console.log(matchMotif);
 
 
            
             utilisateur.esSearch({query:{
                bool:{
-                should:[
-                    {
-                        range: {
-                            dateNaissance: {
-                                gte: dateMin,
-                                lte: dateMax
-                            }
-                        }
-                    }
-                ],
-                must:[
-                    {match: mustGenre}
-                ]
+                   must: [
+                       {match: mustGenre},
+                       {
+                           range: {
+                               dateNaissance: {
+                                   gte: dateMin,
+                                   lte: dateMax
+                               }
+                           }
+                       }
+                   ],
+                   should: [
+                       {query_string: {
+                           default_field: "motifs",
+                           query: matchMotif
+                       }}
+                   ]
             }
             }
             },{hydrate: true}, function(err, result){

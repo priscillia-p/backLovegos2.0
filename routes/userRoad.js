@@ -6,6 +6,8 @@ var utilisateur = require('../models/utilisateur');
 
 var userRouter = express.Router();
 
+const tokens = new Map();
+
 
 
 userRouter.get("/", function(req,res){
@@ -47,7 +49,7 @@ userRouter.post("/login", (req, res, next) => {
                 let token = jwt.sign(signData, "logosCore", {
                     expiresIn: 604800
                 });
-    
+                tokens.set(token,user);
                 response.token = "Token " + token;
                 response.user = user;
                 response.success = true;
