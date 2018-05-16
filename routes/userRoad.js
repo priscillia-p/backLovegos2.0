@@ -6,7 +6,7 @@ var utilisateur = require('../models/utilisateur');
 
 var userRouter = express.Router();
 
-const tokens = new Map();
+var tokens = require('./Token/token');
 
 
 
@@ -35,27 +35,30 @@ userRouter.get("/student", function(req,res){
 //authentification d'un user
 userRouter.post("/login", (req, res, next) => {
     let body = req.body;
-    let response = {success: false};
+    let response = {status: "NOPE"};
 
     utilisateur.authenticate(body.login.trim(), body.password.trim(), (err, user) => {
         if(err) {
-            response.msg = err.msg;
             res.json(response);
         } else {
           //  utilisateur.findOne({"login":body.login.trim(), "password":body.password.trim()}, function(err, user){
                // if(err) throw err;
 
-                let signData = user;
+               let signData = {
+                        id: user._id,
+                        username: user.username
+                    };
                 let token = jwt.sign(signData, "logosCore", {
                     expiresIn: 604800
                 });
                 tokens.set(token,user);
-                response.token = "Token " + token;
-                response.user = user;
-                response.success = true;
-                response.msg = "User authentificated successfuly";
+                console.log(tokens);
+                response.token = token;
+                response.utilisateur = user;
+                response.status = "OK";
                 
                 res.json(response);
+                return tokens;
            // });
             
 
@@ -66,11 +69,17 @@ userRouter.post("/login", (req, res, next) => {
 //récupération du profil d'un utilisateur par son profil
 userRouter.get("/profil/:id", function(req,res,next){
     utilisateur.findById(req.params.id,function(err,user){
-        if(err) throw err;
-        res.json({'utilisateur': user});
+        if(err) {
+            res.json({status:"Failed to load user with id " + req.params.id});
+            throw err;
+        }else{
+            res.json({'utilisateur': user});
+        }
+        
     });
 });
 
+//ajout d'un utilisateur
 userRouter.post("/add", function(req,res,next){
    let user = new utilisateur();
    user.type = req.body.type;
@@ -97,10 +106,9 @@ userRouter.post("/add", function(req,res,next){
             res.json({"success" : "OK"});
         }
     )
-
-
 });
 
+//Update d'un utilisateur
 userRouter.put("/:id", function(req, res, next){
     let user;
     utilisateur.findById(req.params.id, function(err,u){
@@ -114,42 +122,5 @@ userRouter.put("/:id", function(req, res, next){
     });
 });
 
-
-//Récupération de profil recommandé
-userRouter.get("/recommandations/:id", function(req,res,next){
-    let user;
-    utilisateur.findById(req.params.id, function(err, u){
-        if (err) throw err;
-        console.log(u);
-        user = u;
-        console.log(user.dateNaissance);
-    }).then(
-        function(){
-            let motif = user.motifs;
-            let ageRecherche = user.trancheAgeRecherche;
-            let genre = user.genresRecherche;
-            console.log('recommandation - user ageRecherche : ' + ageRecherche);
-            console.log('recommandation - birth year : ' + user.dateNaissance - ageRecherche[0]);
-            console.log('recommandation - min year : ' + user.dateNaissance - ageRecherche[0]);
-           /* try{
-                utilisateur.esSearch({
-                    bool:{
-                        must:[
-                            {match:{motifs:motif}},
-                            {match:{trancheAgeRecherche:ageRecherche}},
-                            {match:{genresRecherche:genre}}
-                        ]
-                    }
-                }).then(function(results){
-                    console.log(results);
-                });
-            }catch(e){
-                console.log("error " + e);
-            }*/
-           
-        }
-    );
-   
-});
 
 module.exports = userRouter;

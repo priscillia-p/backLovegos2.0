@@ -111,7 +111,7 @@ UserSchema.statics.getUserByUserName = function(login,password, callback) {
     let query = {"login": login, "password":password};
     utilisateur.findOne(query, function(err, user){
         if(err) throw err;
-        console.log("getUserbyName : " + user);
+        
         return callback(null,user);
     });
 }
@@ -161,18 +161,6 @@ UserSchema.plugin(mongoosastic,{
     hydrate:true, hydrateOptions: {lean: true}
 });
 
-/*UserSchema.statics.search = function(){
-    UserSchema
-   /* UserSchema.search({'query':{
-        'match':{
-            "nom":"Chanel"
-       }
-    }
-    }, function(err, result){
-    console.log(result);
-    return result;
-    });
-}*/
 
 
 

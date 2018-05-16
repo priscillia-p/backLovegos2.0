@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(cors());
 
-app.use('/lovegos/users',user);
+app.use('/lovegos',user);
 app.use('/lovegos', love);
 app.use('/lovegos/conversation', conversation);
 app.use('/lovegos/message', message);

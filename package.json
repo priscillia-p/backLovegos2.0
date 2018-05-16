@@ -26,6 +26,8 @@
     "jsonwebtoken": "^8.2.1",
     "mongoosastic": "^4.4.1",
     "mongoose": "^5.0.18",
-    "mongoose-elasticsearch-xp": "^5.4.1"
+    "mongoose-elasticsearch-xp": "^5.4.1",
+    "socket.io-client": "^2.1.0",
+    "socketio": "^1.0.0"
   }
 }
