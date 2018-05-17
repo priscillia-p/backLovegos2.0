@@ -22,7 +22,7 @@ const init = () => {
   
   // connect to mongo host, set retry on initial fail
   const connectMongo = () => {
-    mongoose.connect('mongodb://localhost/logos_core');
+    mongoose.connect('mongodb://localhost/logos');
   }
 
   module.exports = init;

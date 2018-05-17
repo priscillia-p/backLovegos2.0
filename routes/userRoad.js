@@ -52,7 +52,7 @@ userRouter.post("/login", (req, res, next) => {
                     expiresIn: 604800
                 });
                 tokens.set(token,user);
-                console.log(tokens);
+                console.log("login tokens : " + tokens);
                 response.token = token;
                 response.utilisateur = user;
                 response.status = "OK";

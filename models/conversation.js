@@ -81,5 +81,5 @@ conversationSchema.statics.createConversation = function(participants,callback){
     //return response;
 }
 
-var conversation = mongoose.model('conversations', conversationSchema);
-module.exports = conversation;
+//var conversation = mongoose.model('conversations', conversationSchema);
+//module.exports = conversation;

@@ -36,13 +36,13 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        es_indexed: false
+        es_indexed: true
     },
     login: {
         type: String,
         required: true,
         trim: true,
-        unique: true,
+        unique: false,
         es_indexed: false
     },
     mail:{type: String,
@@ -56,7 +56,7 @@ const UserSchema = mongoose.Schema({
         trim: true,
         es_indexed: true
     },
-    photo:{type: String,
+    photoUrl:{type: String,
         required: false,
         trim: true,
         es_indexed: true
@@ -76,7 +76,7 @@ const UserSchema = mongoose.Schema({
         required: true,
         es_indexed: false
     },
-    motifs:[{
+    motif:[{
         type:String,
         required:false,
         es_indexed: true
@@ -86,7 +86,7 @@ const UserSchema = mongoose.Schema({
         required:false,
         es_indexed: true
     }],
-    genresRecherche:[{
+    genresRecherches:[{
         type:String,
         required: false,
         es_indexed: true
@@ -164,7 +164,7 @@ UserSchema.plugin(mongoosastic,{
 
 
 
-var utilisateur = mongoose.model('utilisateurs', UserSchema);
+var utilisateur = mongoose.model('users', UserSchema);
 var stream = utilisateur.synchronize();
 var count = 0;
 UserSchema.ser
