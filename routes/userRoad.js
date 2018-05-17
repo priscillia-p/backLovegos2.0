@@ -54,9 +54,22 @@ userRouter.post("/login", (req, res, next) => {
                 tokens.set(token,user);
                 console.log("login tokens : " + tokens);
                 response.token = token;
-                response.utilisateur = user;
+               // response.utilisateur = user;
+                response.utilisateur = {
+                    "id" : user._id,
+                    "dateNaissance": user.dateNaissance,
+                    "geoLoc": user.geoLoc,
+                    "photo": user.photoUrl,
+                    "nom": user.nom,
+                    "prenom": user.prenom,
+                    "motif": user.motif,
+                    "trancheAgeRecherche": user.trancheAgeRecherche,
+                    "genresRecherches": user.genresRecherches,
+                    "presentation": user.presentation,
+                    "genre": user.genre
+                }
                 response.status = "OK";
-                
+                console.log(response.utilisateur);
                 res.json(response);
                 return tokens;
            // });

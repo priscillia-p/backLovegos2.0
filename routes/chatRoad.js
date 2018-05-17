@@ -19,7 +19,18 @@ chatRouter.get('/conversation/:id', function(req, res){
             console.log("conver foud : " + conv);
             conversatioFound.id = conv._id;
             conversatioFound.titre = conv.titre;
-            conversatioFound.messages = conv.messages;
+            //conversatioFound.messages = conv.messages;
+            conversatioFound.messages = [];
+            conv.messages.forEach(m => {
+                console.log("message de la conversation : " + m);
+                let msg = {"contenu": m.message.contenu, "dateEnvoi":m.message.dateEnvoi, "dateLecture": m.message.dateLecture};
+                user.findById(m.message.auteur, function(err, aut){
+                    console.log(aut);
+                    if(err) console.log("pas d'auteur");
+                    msg.auteur = {"nom":aut.nom, "prenom": aut.prenom, "photo": aut.photoUrl};
+                });
+                conversatioFound.messages.push(msg);
+            });
             conversatioFound.participants = [];
            // console.log("conversation found : " + conv.utilisateurs)
             /*conv.utilisateurs.forEach(u => {
@@ -28,6 +39,7 @@ chatRouter.get('/conversation/:id', function(req, res){
                     conversatioFound.participants.push(part);
                 });
             });*/
+            console.log("auteur des messages :" + conversatioFound.messages);
             user.findById(conv.utilisateurs[0], function(err, u1){
                 let part = {"nom": u1.nom, "prenom": u1.prenom, "photo": u1.photoUrl};
                 conversatioFound.participants.push(part);
@@ -64,6 +76,8 @@ chatRouter.get("/conversations", function(req, res){
 //Création d'une nouvelle conversation
 chatRouter.post("/new-conversation", function(req,res){
     let participants = req.body.participants;
+    let titre = req.body.titre;
+    console.log("titre conversation : " + req.body.titre);
     let newChat = new chat();
 
     chat.count({}, function(err, count){
@@ -71,7 +85,9 @@ chatRouter.post("/new-conversation", function(req,res){
         console.log("new conv count : " + count);
         newChat._id = count + 2;
         newChat.utilisateurs = participants;
+        newChat.titre = titre;
         newChat.messages = [];
+        console.log("new conv : " + newChat);
     }).then(
         function(){
             chat.create(newChat);

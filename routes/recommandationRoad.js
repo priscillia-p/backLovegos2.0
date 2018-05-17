@@ -67,7 +67,25 @@ recomRouter.get("/recommandations", function(req, res){
     }
     },{hydrate: true}, function(err, result){
             //console.log(result.hits.hits);
-        return res.json({"utilisateurs": result.hits.hits});
+            let utilisateurs = [];
+            result.hits.hits.forEach(e => {
+                let u = {
+                    "id": e._id,
+                    "dateNaissance": e.dateNaissance,
+                    "geoLoc": e.geoLoc,
+                    "photo": e.photoUrl,
+                    "nom": e.nom,
+                    "prenom": e.prenom,
+                    "motif": e.motif,
+                    "trancheAgeRecherche": e.trancheAgeRecherche,
+                    "genresRecherches": e.genresRecherches,
+                    "presentation": e.presentation,
+                    "genre": e.genre
+                }
+                utilisateurs.push(u);
+            });
+            console.log("recommandation : " + utilisateurs);
+        return res.json({"utilisateurs":utilisateurs});
     });
 });
 

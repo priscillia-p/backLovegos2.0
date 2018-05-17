@@ -1,7 +1,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var loves = require('../models/loves');
-var user = require('../models/utilisateur');
+var utilisateur = require('../models/utilisateur');
 var async = require('async');
 var tokens =require('./Token/token');
 
@@ -12,7 +12,32 @@ loveRouter.get("/loves", function(req, res, next){
     let user = tokens.get(req.get("Auth-token"));
     loves.find({"idDest" : user._id}, function(err, allLoves){
         if(err) throw err;
-        res.json(allLoves);
+        let loves = [];
+        allLoves.forEach(l => {
+            let lov = {
+                "id": l._id,
+                "dateHeure": l.dateHeure,
+                "vu": l.vu
+            }
+            utilisateur.findById(l.idExp, function(err, u){
+                if(err) console.log ("pas de expéditeur");
+                lov.expediteur = {
+                    "id": u._id,
+                    "dateNaissance": u.dateNaissance,
+                    "geoLoc": u.geoLoc,
+                    "photo": u.photoUrl,
+                    "nom": u.nom,
+                    "prenom": u.prenom,
+                    "motif": u.motif,
+                    "trancheAgeRecherche": u.trancheAgeRecherche,
+                    "genresRecherches": u.genresRecherches,
+                    "presentation": u.presentation,
+                    "genre": u.genre
+                }
+                loves.push(lov);
+            });
+        });
+        res.json(loves);
     });
 });
 
@@ -21,7 +46,32 @@ loveRouter.get("/loves-non-vus", function(req,res){
     let user = tokens.get(req.get("Auth-token"));
     loves.find({"idDest": user._id, "vu": false}, function(err, lovesNonVus){
         if(err) throw err;
-        res.json(lovesNonVus);
+        let loves = [];
+        lovesNonVus.forEach(l => {
+            let lov = {
+                "id": l._id,
+                "dateHeure": l.dateHeure,
+                "vu": l.vu
+            }
+            utilisateur.findById(l.idExp, function(err, u){
+                if(err) console.log ("pas de expéditeur");
+                lov.expediteur = {
+                    "id": u._id,
+                    "dateNaissance": u.dateNaissance,
+                    "geoLoc": u.geoLoc,
+                    "photo": u.photoUrl,
+                    "nom": u.nom,
+                    "prenom": u.prenom,
+                    "motif": u.motif,
+                    "trancheAgeRecherche": u.trancheAgeRecherche,
+                    "genresRecherches": u.genresRecherches,
+                    "presentation": u.presentation,
+                    "genre": u.genre
+                }
+                loves.push(lov);
+            });
+        });
+        res.json(loves);
     });
 });
 
