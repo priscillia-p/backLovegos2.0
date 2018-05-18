@@ -55,6 +55,26 @@ userRouter.post("/login", (req, res, next) => {
                 console.log("login tokens : " + tokens);
                 response.token = token;
                // response.utilisateur = user;
+               let motifs = [];
+               user.motif.forEach(m => {
+                   switch(m){
+                       case "amuser": 
+                            motifs.push("S'amuser");
+                            break;
+                       case "serieux":
+                            motifs.push("Relation sérieuse");
+                            break;
+                       case "pratiquerLangues":
+                            motifs.push("Pratiquer les langues");
+                            break;
+                       case "rencontrerGens":
+                            motifs.push("Rencontrer des personnes");
+                            break;
+                       case "peuImporte":
+                            motifs.push("Peu importe");
+                            break;
+                   }
+               });
                 response.utilisateur = {
                     "id" : user._id,
                     "dateNaissance": user.dateNaissance,
@@ -62,7 +82,7 @@ userRouter.post("/login", (req, res, next) => {
                     "photo": user.photoUrl,
                     "nom": user.nom,
                     "prenom": user.prenom,
-                    "motif": user.motif,
+                    "motif": motifs,
                     "trancheAgeRecherche": user.trancheAgeRecherche,
                     "genresRecherches": user.genresRecherches,
                     "presentation": user.presentation,

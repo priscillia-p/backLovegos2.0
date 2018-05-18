@@ -61,7 +61,7 @@ chatRouter.get('/conversation/:id', function(req, res){
 //Récupération de toutes les conversation de l'utilisateur
 chatRouter.get("/conversations", function(req, res){
     let user = tokens.get(req.get("Auth-token"));
-    
+    console.log("conversations de l'utilisateur")
     chat.aggregate([{"$match":{"utilisateurs":{"$in":[user._id]}}}], function(err, convs){
         if(err) return res.json({"success": "Nope"});
         let rooms = [];
@@ -69,6 +69,7 @@ chatRouter.get("/conversations", function(req, res){
             let co = {"id": c._id, "titre": c.titre};
             rooms.push(co);
         });
+        console.log(rooms);
         return res.json(rooms);
     })
 });
